@@ -39,4 +39,4 @@ EXPOSE 8080
 #ENV FLASK_ENV=production
 
 # Define the command to run the application
-CMD ["python", "main.py"]
+CMD ["gunicorn", "--bind", "0.0.0.0:$PORT", "main:app"]
