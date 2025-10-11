@@ -1,0 +1,40 @@
+name: Deploy to Cloud Run
+
+on:
+  push:
+    branches:
+      - main # Or your main development branch
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: '${{ secrets.GCP_PROJECT_ID }}'
+
+      - name: Configure Docker for Artifact Registry
+        run: |
+          gcloud auth configure-docker ${{ secrets.GCP_AR_REGION }}-docker.pkg.dev
+
+      - name: Build and push Docker image
+        run: |
+          docker build -t ${{ secrets.GCP_AR_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_AR_REPO_NAME }}/${{ secrets.GCP_CLOUD_RUN_SERVICE_NAME }}:${{ github.sha }} .
+          docker push ${{ secrets.GCP_AR_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_AR_REPO_NAME }}/${{ secrets.GCP_CLOUD_RUN_SERVICE_NAME }}:${{ github.sha }}
+
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy ${{ secrets.GCP_CLOUD_RUN_SERVICE_NAME }} \
+            --image ${{ secrets.GCP_AR_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_AR_REPO_NAME }}/${{ secrets.GCP_CLOUD_RUN_SERVICE_NAME }}:${{ github.sha }} \
+            --platform managed \
+            --region ${{ secrets.GCP_AR_REGION }} \
+            --allow-unauthenticated # Or configure authentication as needed
