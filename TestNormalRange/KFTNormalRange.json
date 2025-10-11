@@ -1,0 +1,44 @@
+{
+  "KFT": {
+    "BUN": {
+      "unit": "mg/dl",
+      "range": "7 - 25"
+    },
+    "SERUM UREA": {
+      "unit": "mg/dl",
+      "range": "20 - 40"
+    },
+    "SERUM CREATININE": {
+      "unit": "mg/dl",
+      "range": "Male: 0.6 - 1.2, Female: 0.5 - 1.1"
+    },
+    "EGFR": {
+      "unit": "ml/min/1.73m^2",
+      "range": "> 90"
+    },
+    "SERUM CALCIUM": {
+      "unit": "mg/dl",
+      "range": "Male: 8.8 - 10.8, Female: 8.5 - 10.5"
+    },
+    "SERUM POTASSIUM": {
+      "unit": "mmol/L",
+      "range": "3.5 - 5.1"
+    },
+    "SERUM SODIUM": {
+      "unit": "mmol/L",
+      "range": "135 - 145"
+    },
+    "SERUM URIC ACID": {
+      "unit": "mg/dl",
+      "range": "Male: 3.5 - 7.2, Female: 2.6 - 6.0"
+    },
+    "UREA / CREATININE RATIO": {
+      "unit": "N/A",
+      "range": "Male: 12 - 20, Female: 10 - 15"
+    },
+    "BUN / CREATININE RATIO": {
+      "unit": "N/A",
+      "range": "Male: 10 - 20, Female: 10 - 15"
+    }
+  }
+}

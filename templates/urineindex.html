@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Urine Report</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+        .form-container {
+            max-width: 900px; /* Wider container for form */
+            width: 100%;
+            background-color: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            padding: 30px;
+        }
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #007bff;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        .subsection-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            padding-left: 10px;
+            border-left: 4px solid #007bff;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #4a5568;
+            margin-bottom: 5px;
+        }
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group input[type="date"],
+        .form-group input[type="time"],
+        .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #cbd5e0;
+            border-radius: 6px;
+            font-size: 1rem;
+            color: #2d3748;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #63b3ed;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+        }
+        .grid-cols-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        .grid-cols-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        .grid-cols-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        .table-input-group {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr; /* Test, Value, Unit */
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .table-input-group label {
+            margin-bottom: 0;
+            font-weight: normal;
+        }
+        .table-input-group input {
+            width: auto; /* Allow inputs to size naturally within grid */
+        }
+        .submit-button {
+            background-color: #28a745;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3);
+            border: none;
+            width: auto;
+            margin-top: 30px;
+        }
+        .submit-button:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+        .submit-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(40, 167, 69, 0.3);
+        }
+
+        .back-button:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+        .back-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(40, 167, 69, 0.3);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .grid-cols-2, .grid-cols-3, .grid-cols-4 {
+                grid-template-columns: 1fr; /* Stack columns on small screens */
+            }
+            .table-input-group {
+                grid-template-columns: 1fr; /* Stack inputs for each test */
+            }
+            .table-input-group label {
+                width: 100%;
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1 class="section-title">Generate Urine Report</h1>
+        <form id="urineReportForm" action="/generate_urine_report" method="POST">
+            <!-- Patient Details Section -->
+            <div class="mb-8">
+                <h2 class="subsection-title">Patient Details</h2>
+                <div class="grid grid-cols-2">
+                    <div class="form-group">
+                        <label for="patientName">Patient Name:</label>
+                        <input type="text" id="patientName" name="patientName" placeholder="Mr. Dummy" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ageSex">Age / Sex:</label>
+                        <input type="text" id="ageSex" name="ageSex" placeholder="28 YRS / M" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="referredBy">Referred by:</label>
+                        <input type="text" id="referredBy" name="referredBy" placeholder="Dr. Sachin Patil (MBBS)">
+                    </div>
+                    <div class="form-group">
+                        <label for="regNo">Reg. No.:</label>
+                        <input type="text" id="regNo" name="regNo" placeholder="1115">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Report Dates Section -->
+            <div class="mb-8">
+                <h2 class="subsection-title">Report Dates</h2>
+                <div class="grid grid-cols-2">
+                    <div class="form-group">
+                        <label for="registeredOnDate">Registered on (Date):</label>
+                        <input type="date" id="registeredOnDate" name="registeredOnDate" value="2024-11-25" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registeredOnTime">Registered on (Time):</label>
+                        <input type="time" id="registeredOnTime" name="registeredOnTime" value="13:11" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="collectedOn">Collected on:</label>
+                        <input type="date" id="collectedOn" name="collectedOn" value="2024-11-25" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reportedOn">Reported on:</label>
+                        <input type="date" id="reportedOn" name="reportedOn" value="2024-11-25" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="receivedOnDate">Received on (Date):</label>
+                        <input type="date" id="receivedOnDate" name="receivedOnDate" value="2024-11-25" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="receivedOnTime">Received on (Time):</label>
+                        <input type="time" id="receivedOnTime" name="receivedOnTime" value="13:11" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Clinical Pathology Section -->
+            <div class="mb-8">
+                <h2 class="section-title">CLINICAL PATHOLOGY</h2>
+
+                <!-- Physical Examination -->
+                <div class="mb-6">
+                    <h3 class="subsection-title">PHYSICAL EXAMINATION</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 items-center gap-x-4 gap-y-2">
+                        <div class="form-group col-span-1">
+                            <label for="quantity">QUANTITY:</label>
+                            <input type="number" id="quantity" name="quantity" value="20" placeholder="e.g., 20">
+                        </div>
+                        <div class="form-group col-span-1">
+                            <label for="quantityUnit">Unit:</label>
+                            <input type="text" id="quantityUnit" name="quantityUnit" value="ml" placeholder="e.g., ml">
+                        </div>
+                        <div class="form-group col-span-2">
+                            <label for="colour">COLOUR:</label>
+                            <input type="text" id="colour" name="colour" value="Pale Yellow" placeholder="e.g., Pale Yellow">
+                        </div>
+                        <div class="form-group col-span-2">
+                            <label for="transparency">TRANSPARENCY:</label>
+                            <input type="text" id="transparency" name="transparency" value="Clear" placeholder="e.g., Clear">
+                        </div>
+                        <div class="form-group col-span-1">
+                            <label for="specificGravity">SPECIFIC GRAVITY:</label>
+                            <input type="number" step="0.001" id="specificGravity" name="specificGravity" value="1.025" placeholder="e.g., 1.025">
+                        </div>
+                        <div class="form-group col-span-1">
+                            <label for="specificGravityRef">Reference:</label>
+                            <input type="text" id="specificGravityRef" name="specificGravityRef" value="1.005 - 1.03" placeholder="e.g., 1.005 - 1.03">
+                        </div>
+                        <div class="form-group col-span-1">
+                            <label for="ph">PH:</label>
+                            <input type="number" step="0.1" id="ph" name="ph" value="5.5" placeholder="e.g., 5.5">
+                        </div>
+                        <div class="form-group col-span-1">
+                            <label for="phRef">Reference:</label>
+                            <input type="text" id="phRef" name="phRef" value="5 - 7" placeholder="e.g., 5 - 7">
+                        </div>
+                        <div class="form-group col-span-2">
+                            <label for="leukocytes">LEUKOCYTES:</label>
+                            <input type="text" id="leukocytes" name="leukocytes" value="Absent" placeholder="e.g., Absent">
+                        </div>
+                        <div class="form-group col-span-2">
+                            <label for="blood">BLOOD:</label>
+                            <input type="text" id="blood" name="blood" value="Absent" placeholder="e.g., Absent">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chemical Examination -->
+                <div class="mb-6">
+                    <h3 class="subsection-title">CHEMICAL EXAMINATION</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 items-center gap-x-4 gap-y-2">
+                        <div class="form-group col-span-2">
+                            <label for="proteinAlbumin">PROTEIN / ALBUMIN:</label>
+                            <input type="text" id="proteinAlbumin" name="proteinAlbumin" value="Absent" placeholder="e.g., Absent">
+                        </div>
+                        <div class="form-group col-span-2">
+                            <label for="sugarGlucose">SUGAR / GLUCOSE:</label>
+                            <input type="text" id="sugarGlucose" name="sugarGlucose" value="Absent" placeholder="e.g., Absent">
+                        </div>
+                        <div class="form-group col-span-2">
+                            <label for="ketoneBodies">KETONE BODIES:</label>
+                            <input type="text" id="ketoneBodies" name="ketoneBodies" value="Absent" placeholder="e.g., Absent">
+                        </div>
+                        <div class="form-group col-span-2">
+                            <label for="bilirubin">BILIRUBIN:</label>
+                            <input type="text" id="bilirubin" name="bilirubin" value="Absent" placeholder="e.g., Absent">
+                        </div>
+                        <div class="form-group col-span-2">
+                            <label for="nitrite">NITRITE:</label>
+                            <input type="text" id="nitrite" name="nitrite" value="Absent" placeholder="e.g., Absent">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Microscopic Examination -->
+                <div class="mb-6">
+                    <h3 class="subsection-title">MICROSCOPIC EXAMINATION</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 items-center gap-x-4 gap-y-2">
+                        <div class="form-group col-span-1">
+                            <label for="rbc">R.B.C.:</label>
+                            <input type="text" id="rbc" name="rbc" value="Absent" placeholder="e.g., Absent">
+                        </div>
+                        <div class="form-group col-span-1">
+                            <label for="rbcUnit">Unit:</label>
+                            <input type="text" id="rbcUnit" name="rbcUnit" value="/HPF" placeholder="e.g., /HPF">
+                        </div>
+                        <div class="form-group col-span-1">
+                            <label for="pusCells">PUS CELLS:</label>
+                            <input type="text" id="pusCells" name="pusCells" value="Absent" placeholder="e.g., Absent">
+                        </div>
+                        <div class="form-group col-span-1">
+                            <label for="pusCellsUnit">Unit:</label>
+                            <input type="text" id="pusCellsUnit" name="pusCellsUnit" value="/HPF" placeholder="e.g., /HPF">
+                        </div>
+                        <div class="form-group col-span-1">
+                            <label for="epithelialCells">EPITHELIAL CELLS:</label>
+                            <input type="text" id="epithelialCells" name="epithelialCells" value="Absent" placeholder="e.g., Absent">
+                        </div>
+                        <div class="form-group col-span-1">
+                            <label for="epithelialCellsUnit">Unit:</label>
+                            <input type="text" id="epithelialCellsUnit" name="epithelialCellsUnit" value="/HPF" placeholder="e.g., /HPF">
+                        </div>
+                        <div class="form-group col-span-2">
+                            <label for="casts">CASTS:</label>
+                            <input type="text" id="casts" name="casts" value="Absent" placeholder="e.g., Absent">
+                        </div>
+                        <div class="form-group col-span-2">
+                            <label for="crystals">CRYSTALS:</label>
+                            <input type="text" id="crystals" name="crystals" value="Absent" placeholder="e.g., Absent">
+                        </div>
+                        <div class="form-group col-span-2">
+                            <label for="bacteria">BACTERIA:</label>
+                            <input type="text" id="bacteria" name="bacteria" value="Absent" placeholder="e.g., Absent">
+                        </div>
+                        <div class="form-group col-span-2">
+                            <label for="others">OTHERS:</label>
+                            <input type="text" id="others" name="others" value="Absent" placeholder="e.g., Absent">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center mt-8 form-actions">
+                <button type="submit" class="submit-button">Generate Report</button>
+                <a href="/home" class="submit-button">Back to Home</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

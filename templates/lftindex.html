@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LFT Report Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        h2{
+           text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #2c3e50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            opacity: 0.8;
+        }
+        .section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+        }
+        .navigation-buttons {
+            margin: 20px 0;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            color: white;
+        }
+        /* New styles for LFT parameters matching CBC */
+        .parameter-row {
+            display: grid;
+            grid-template-columns: 2fr 1.5fr 1.5fr 1fr;
+            align-items: center;
+            margin-bottom: 10px;
+            column-gap: 15px;
+        }
+        .parameter-name {
+            font-weight: bold;
+        }
+        .obtain-value-input input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .normal-range-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .select-checkbox {
+            text-align: right;
+        }
+        .select-checkbox input[type="checkbox"] {
+            margin-left: 10px;
+        }
+        .header-row{
+            display: grid;
+            grid-template-columns: 2fr 1.5fr 1.5fr 1fr;
+            align-items: center;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-align: center;
+             column-gap: 15px;
+        }
+        .patient-info-grid {
+            display: grid;
+            grid-template-columns: auto auto;
+            gap: 10px;
+        }
+        .patient-info-grid > div {
+            margin-bottom: 10px;
+        }
+        @media (max-width: 400px){
+           .parameter-row {
+             grid-template-columns: 1fr 1fr;
+           }
+           .parameter-name{
+             grid-column: 1 / -1;
+             margin-bottom: 10px;
+           }
+           .select-checkbox{
+             text-align: left;
+           }
+        }
+    </style>
+</head>
+<body>
+    <h1>LFT Report Form</h1>
+    <form action="/generate_lft_report" method="POST">
+        <div class="form-group" id="selected_lft_test">
+            <label for="lft_test_type">Select Test:</label>
+            <select id="lft_test_type" name="selected_lft_test" required onchange="showTestParameters(this.value)">
+                <option value="">Select a Test</option>
+                <option value="LFT">Liver Function Test (LFT)</option>
+            </select>
+        </div>
+
+        <div id="test_parameters" style="display: none;">
+            <div class="section">
+                <h2>Patient Information</h2>
+                <div class="patient-info-grid">
+                    <div>
+                        <label for="patient_name">Name:</label>
+                        <input type="text" id="patient_name" name="patient_name" required>
+                    </div>
+                    <div>
+                        <label for="patient_id">Patient ID:</label>
+                        <input type="text" id="patient_id" name="patient_id">
+                    </div>
+                    <div>
+                        <label for="age">Age / Gender:</label>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="number" id="age" name="age" style="width: 60px;" required>
+                            <select id="gender" name="gender" required style="width: 80px;">
+                                <option value="">Select</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="report_id">Report ID:</label>
+                        <input type="text" id="report_id" name="report_id">
+                    </div>
+                    <div>
+                        <label for="referedby">Referred By:</label>
+                        <input type="text" id="referedby" name="referedby">
+                    </div>
+                    <div>
+                        <label for="phonenumber">Phone No.:</label>
+                        <input type="tel" id="phonenumber" name="phonenumber">
+                    </div>
+                    <div>
+                        <label for="collection_date">Collection Date:</label>
+                        <input type="datetime-local" id="collection_date" name="collection_date">
+                    </div>
+                    <div>
+                        <label for="report_date">Report Date:</label>
+                        <input type="datetime-local" id="report_date" name="report_date">
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>LFT Parameters</h2>
+                <div class="header-row">
+                    <div>Test Parameter Name</div>
+                    <div>Obtain Value</div>
+                    <div>Normal Range</div>
+                    <div>Select</div>
+                </div>
+
+                <div class="parameter-row">
+                    <div class="parameter-name">SERUM BILIRUBIN (TOTAL) (mg/dl)</div>
+                    <div class="obtain-value-input">
+                        <input type="number" step="0.01" id="SERUM BILIRUBIN (TOTAL)" name="SERUM BILIRUBIN (TOTAL)">
+                    </div>
+                    <div class="normal-range-input">
+                        <input type="text" name="SERUM BILIRUBIN (TOTAL)_normal_range" placeholder="Normal Range">
+                    </div>
+                    <div class="select-checkbox">
+                        <input type="checkbox" id="SERUM BILIRUBIN (TOTAL)_check" name="selected_lft_parameters" value="SERUM BILIRUBIN (TOTAL)" onchange="toggleParameterInput('SERUM BILIRUBIN (TOTAL)')">
+                    </div>
+                </div>
+
+                <div class="parameter-row">
+                    <div class="parameter-name">SERUM BILIRUBIN (DIRECT) (mg/dl)</div>
+                    <div class="obtain-value-input">
+                        <input type="number" step="0.01" id="SERUM BILIRUBIN (DIRECT)" name="SERUM BILIRUBIN (DIRECT)">
+                    </div>
+                    <div class="normal-range-input">
+                        <input type="text" name="SERUM BILIRUBIN (DIRECT)_normal_range" placeholder="Normal Range">
+                    </div>
+                    <div class="select-checkbox">
+                        <input type="checkbox" id="SERUM BILIRUBIN (DIRECT)_check" name="selected_lft_parameters" value="SERUM BILIRUBIN (DIRECT)" onchange="toggleParameterInput('SERUM BILIRUBIN (DIRECT)')">
+                    </div>
+                </div>
+
+                <div class="parameter-row">
+                    <div class="parameter-name">SERUM BILIRUBIN (INDIRECT) (mg/dl)</div>
+                    <div class="obtain-value-input">
+                        <input type="number" step="0.01" id="SERUM BILIRUBIN (INDIRECT)" name="SERUM BILIRUBIN (INDIRECT)">
+                    </div>
+                    <div class="normal-range-input">
+                        <input type="text" name="SERUM BILIRUBIN (INDIRECT)_normal_range" placeholder="Normal Range">
+                    </div>
+                    <div class="select-checkbox">
+                        <input type="checkbox" id="SERUM BILIRUBIN (INDIRECT)_check" name="selected_lft_parameters" value="SERUM BILIRUBIN (INDIRECT)" onchange="toggleParameterInput('SERUM BILIRUBIN (INDIRECT)')">
+                    </div>
+                </div>
+
+                <div class="parameter-row">
+                    <div class="parameter-name">SGPT (ALT) (U/I)</div>
+                    <div class="obtain-value-input">
+                        <input type="number" step="0.01" id="SGPT (ALT)" name="SGPT (ALT)">
+                    </div>
+                    <div class="normal-range-input">
+                        <input type="text" name="SGPT (ALT)_normal_range" placeholder="Normal Range">
+                    </div>
+                    <div class="select-checkbox">
+                        <input type="checkbox" id="SGPT (ALT)_check" name="selected_lft_parameters" value="SGPT (ALT)" onchange="toggleParameterInput('SGPT (ALT)')">
+                    </div>
+                </div>
+
+                <div class="parameter-row">
+                    <div class="parameter-name">SGOT (AST) (U/I)</div>
+                    <div class="obtain-value-input">
+                        <input type="number" step="0.01" id="SGOT (AST)" name="SGOT (AST)">
+                    </div>
+                    <div class="normal-range-input">
+                        <input type="text" name="SGOT (AST)_normal_range" placeholder="Normal Range">
+                    </div>
+                    <div class="select-checkbox">
+                        <input type="checkbox" id="SGOT (AST)_check" name="selected_lft_parameters" value="SGOT (AST)" onchange="toggleParameterInput('SGOT (AST)')">
+                    </div>
+                </div>
+
+                <div class="parameter-row">
+                    <div class="parameter-name">SERUM ALKALINE PHOSPHATASE (U/I)</div>
+                    <div class="obtain-value-input">
+                        <input type="number" step="0.01" id="SERUM ALKALINE PHOSPHATASE" name="SERUM ALKALINE PHOSPHATASE">
+                    </div>
+                    <div class="normal-range-input">
+                        <input type="text" name="SERUM ALKALINE PHOSPHATASE_normal_range" placeholder="Normal Range">
+                    </div>
+                    <div class="select-checkbox">
+                        <input type="checkbox" id="SERUM ALKALINE PHOSPHATASE_check" name="selected_lft_parameters" value="SERUM ALKALINE PHOSPHATASE" onchange="toggleParameterInput('SERUM ALKALINE PHOSPHATASE')">
+                    </div>
+                </div>
+
+                <div class="parameter-row">
+                    <div class="parameter-name">SERUM PROTEIN (g/dl)</div>
+                    <div class="obtain-value-input">
+                        <input type="number" step="0.01" id="SERUM PROTEIN" name="SERUM PROTEIN">
+                    </div>
+                    <div class="normal-range-input">
+                        <input type="text" name="SERUM PROTEIN_normal_range" placeholder="Normal Range">
+                    </div>
+                    <div class="select-checkbox">
+                        <input type="checkbox" id="SERUM PROTEIN_check" name="selected_lft_parameters" value="SERUM PROTEIN" onchange="toggleParameterInput('SERUM PROTEIN')">
+                    </div>
+                </div>
+
+                <div class="parameter-row">
+                    <div class="parameter-name">SERUM ALBUMIN (g/dl)</div>
+                    <div class="obtain-value-input">
+                        <input type="number" step="0.01" id="SERUM ALBUMIN" name="SERUM ALBUMIN">
+                    </div>
+                    <div class="normal-range-input">
+                        <input type="text" name="SERUM ALBUMIN_normal_range" placeholder="Normal Range">
+                    </div>
+                    <div class="select-checkbox">
+                        <input type="checkbox" id="SERUM ALBUMIN_check" name="selected_lft_parameters" value="SERUM ALBUMIN" onchange="toggleParameterInput('SERUM ALBUMIN')">
+                    </div>
+                </div>
+
+                <div class="parameter-row">
+                    <div class="parameter-name">GLOBULIN (g/dl)</div>
+                    <div class="obtain-value-input">
+                        <input type="number" step="0.01" id="GLOBULIN" name="GLOBULIN">
+                    </div>
+                    <div class="normal-range-input">
+                        <input type="text" name="GLOBULIN_normal_range" placeholder="Normal Range">
+                    </div>
+                    <div class="select-checkbox">
+                        <input type="checkbox" id="GLOBULIN_check" name="selected_lft_parameters" value="GLOBULIN" onchange="toggleParameterInput('GLOBULIN')">
+                    </div>
+                </div>
+
+                <div class="parameter-row">
+                    <div class="parameter-name">A/G RATIO</div>
+                    <div class="obtain-value-input">
+                        <input type="number" step="0.01" id="A/G RATIO" name="A/G RATIO">
+                    </div>
+                    <div class="normal-range-input">
+                        <input type="text" name="A/G RATIO_normal_range" placeholder="Normal Range">
+                    </div>
+                    <div class="select-checkbox">
+                        <input type="checkbox" id="A/G RATIO_check" name="selected_lft_parameters" value="A/G RATIO" onchange="toggleParameterInput('A/G RATIO')">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit">Generate LFT Report</button>
+    </form>
+
+    <div class="navigation-buttons">
+        <a href="{{ url_for('home') }}" class="btn btn-secondary">
+            ← Back to Home
+        </a>
+    </div>
+
+    <script>
+        function showTestParameters(selectedTest) {
+            const testParametersDiv = document.getElementById('test_parameters');
+            if (selectedTest === 'LFT') {
+                testParametersDiv.style.display = 'block';
+            } else {
+                testParametersDiv.style.display = 'none';
+            }
+        }
+
+       function toggleParameterInput(parameterName) {
+            const checkbox = document.getElementById(parameterName + '_check');
+            const inputDiv = document.getElementById(parameterName + '_input');
+            if (checkbox.checked) {
+                inputDiv.style.display = 'block';
+            } else {
+                inputDiv.style.display = 'none';
+                const inputField = inputDiv.querySelector('input');
+                if (inputField) {
+                    inputField.value = '';
+                }
+            }
+        }
+    </script>
+</body>
+</html>

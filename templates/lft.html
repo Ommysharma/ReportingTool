@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LFT Pathology Report</title>
+    <style>
+       @page {
+            size: A4;
+            margin: 0.5cm;
+            /* Define a footer for each page with a straight line */
+            @bottom-center {
+                content: ""; /* Essential for the border to be rendered */
+                border-top: 1px solid #000; /* The straight line */
+                width: 100%; /* Make the line span the full width of the page area */
+                margin-top: 20px; /* Space between the bottom of the page content and the line */
+            }
+        }
+        body {
+            font-family: 'Times New Roman', serif;
+            line-height: 1.3;
+            color: #2c3e50;
+            font-size: 0.95em;
+            margin: 0;
+            padding-top: 3.5cm; /* Space for the letterhead */
+        }
+        .letterhead {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #1a237e;
+            color: white;
+            padding: 15px 0;
+            z-index: 1000;
+        }
+        .letterhead-content {
+            max-width: 21cm;
+            margin: 0 auto;
+            padding: 0 1cm;
+        }
+        .main-content {
+            padding: 0 1cm;
+        }
+        /* Patient Info Styling - Reduced size */
+        .patient-info {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            font-size: 0.85em;
+        }
+        .patient-info h3 {
+            font-size: 1.1em;
+            margin-top: 0;
+            margin-bottom: 5px;
+        }
+        .patient-info p {
+            margin: 2px 0;
+        }
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 0.9em;
+        }
+        .report-table td, .report-table th {
+            border: 1px solid #dee2e6;
+            padding: 5px;
+            text-align: left;
+        }
+        .report-table th {
+            background-color: #2c3e50;
+            color: white;
+            font-weight: 500;
+        }
+        .clinical-notes { /* Original name for specific notes, if any */
+            margin: 15px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+        .generic-notes { /* "Important Note" section */
+            margin-top: 10px;
+            padding: 8px;
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 0.8px;
+            font-size: 0.80em;
+            color: #555;
+        }
+        .note-item {
+            margin-bottom: 10px;
+        }
+        .note-item:last-child {
+            margin-bottom: 0;
+        }
+        .signature-block {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .disclaimer { /* Original disclaimer if present, not used in the provided HTML */
+            font-size: 0.75em;
+            color: #6c757d;
+            margin-top: 20px;
+            border-top: 1px solid #dee2e6;
+            padding-top: 10px;
+        }
+        .download-container {
+            text-align: center;
+            margin: 15px 0;
+        }
+        .download-btn {
+            display: inline-block;
+            padding: 8px 20px;
+            background-color: #2c3e50;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        .letterhead:hover { /* Hover effect not relevant for print, but kept for consistency */
+            transform: translateY(-2px);
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+        }
+        /* Print specific styles */
+        @media print {
+            .no-print {
+                display: none !important; /* Hide download buttons and other non-print elements */
+            }
+        }
+
+        .watermark {
+            position: fixed; /* Position the watermark */
+            top: 50%;       /* Center vertically */
+            left: 50%;      /* Center horizontally */
+            transform: translate(-50%, -50%) rotate(-45deg); /* Center and rotate */
+            font-size: 5em; /* Large font size */
+            color: rgba(0, 0, 0, 0.1); /* Semi-transparent black */
+            z-index: -1;    /* Ensure it's behind content */
+            white-space: nowrap; /* Prevent text wrapping */
+            pointer-events: none; /* Allow clicking through the watermark */
+        }
+    </style>
+</head>
+<body>
+    <div class="letterhead">
+        <div class="letterhead-content">
+            <h1 style="margin: 0; font-size: 1.5em; border-bottom: 2px solid #ffd600; padding-bottom: 8px;">
+                S.D PATHOLOGICAL LABORATORY & X-RAY CLINIC
+            </h1>
+            <div style="margin-top: 10px; font-size: 0.8em; text-align: center;">
+                <p style="margin: 3px 0;">
+                    <strong>Regd.No.:</strong> XXXX54826XX •
+                    <strong>Phone:</strong> 8294959563, 6299618711 •
+                    <strong>Email:</strong> slab8985@gmail.com
+                </p>
+                <p style="margin: 3px 0;">
+                    <strong>Address:</strong> Near Thakurbari Temple, Taraiya Saran
+                </p>
+            </div>
+        </div>
+    </div>
+
+
+        <div class="patient-info">
+            <h3>Patient Information</h3>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                <div>
+                    <p><strong>Name:</strong> <span style="font-weight: bold; color: #1a237e;">{{ report.patient_name }}</span></p>
+                    <p><strong>Age/Sex:</strong> <span style="font-weight: bold; color: #1a237e;">{{ report.Age }} / {{ report.Gender }}</span></p>
+                    <p><strong>Referred by:</strong> <span style="font-weight: bold; color: #1a237e;">{{ report.referedby }}</span></p>
+                    <p><strong>Reg. No:</strong> <span style="font-weight: bold; color: #1a237e;">{{ report.patient_id }}</span></p>
+                </div>
+                <div>
+                    <p><strong>Collection Date:</strong> <span style="font-weight: bold; color: #1a237e;">{{ report.get('collection_date', 'N/A') }}</span></p>
+                    <p><strong>Report Date:</strong> <span style="font-weight: bold; color: #1a237e;">{{ report.get('report_date', 'N/A') }}</span></p>
+                    <p><strong>Phone No.:</strong> <span style="font-weight: bold; color: #1a237e;">{{ report.get('phonenumber', 'N/A') }}</span></p>
+                </div>
+            </div>
+        </div>
+
+        {% if report.selected_test == 'LFT' and report.get('lft_results') %}
+        <h3>Liver Function Test (LFT)</h3>
+        <table class="report-table">
+            <thead>
+                <tr>
+                    <th style="width: 35%">Test</th>
+                    <th style="width: 20%">Value</th>
+                    <th style="width: 15%">Unit</th>
+                    <th style="width: 30%">Reference</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for param, value in report.get('lft_results', {}).items() %}
+            <tr>
+                <td>{{ param }}</td>
+                <td>{{ value }}</td>
+                <td>{{ normal_ranges.get(param, {}).get('unit', 'N/A') }}</td>
+                <td>
+                {% set user_provided_range = report.get(param + '_normal_range') %}
+                {% if user_provided_range %}
+                    {{ user_provided_range }}
+                {% else %}
+                    {# Existing logic to get range from NORMAL_RANGES based on gender #}
+                    {% set range_str = normal_ranges.get(param, {}).get('range', 'N/A') %}
+                    {% if range_str != 'N/A' %}
+                        {% if report.Gender == 'Male' %}
+                            {% if 'Male:' in range_str %}
+                                {{ range_str.split(', ')[0].split(': ')[1] }}
+                            {% else %}
+                                {{ range_str }}
+                            {% endif %}
+                        {% elif report.Gender == 'Female' %}
+                            {% if 'Female:' in range_str %}
+                                {{ range_str.split(', ')[1].split(': ')[1] }}
+                            {% else %}
+                                {{ range_str }}
+                            {% endif %}
+                        {% else %}
+                            {{ range_str }}
+                        {% endif %}
+                    {% else %}
+                        {{ range_str }}
+                    {% endif %}
+                {% endif %}
+            </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        </tbody>
+    </table>
+    {% endif %}
+
+    <div class="generic-notes">
+        <h3>Important Note</h3>
+        <p>-: This report is intended for informational purposes only and should not be used for diagnosis or treatment decisions without consultation with a qualified healthcare professional.</p>
+        <p>-: Results should be interpreted in the context of the patient's clinical history, other diagnostic findings, and physical examination.</p>
+        <p>-: While utmost care has been taken in the preparation of this report, laboratory results may be subject to biological variation and technical limitations.</p>
+        <p>-: Please contact the laboratory for any clarifications or concerns regarding this report.</p>
+        <p>-: Work timings: Monday to Sunday, 8 am to 8 pm.</p>
+    </div>
+
+    <div class="signature-block">
+        <div>
+            <p>Mr. Surendra Rai</p>
+            <p>DMLT, Lab Incharge</p>
+        </div>
+    </div>
+</body>
+
+    {# Watermark element #}
+    <div class="watermark">S.D LAB REPORT</div>
+
+<body>
+    <div class="download-container no-print">
+        <a href="/download_pdf/LFT/{{ report_id }}" class="download-btn">
+            📥 Download Full Report
+        </a>
+        <a href="{{ url_for('lft_report') }}" class="btn btn-primary">
+        ← GO To Previous Report
+        </a>
+
+        <a href="{{ url_for('home') }}" class="btn btn-secondary">
+            🏠 Return to Home
+        </a>
+    </div>
+</body>
+</html>

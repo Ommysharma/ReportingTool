@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blood Sugar Report Form (FP & PP)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        h2 {
+           text-align: center;
+           color: #555;
+           margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #444;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        button {
+            background-color: #2c3e50;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #34495e;
+        }
+        .section {
+            margin: 25px 0;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        .navigation-buttons {
+            margin-top: 30px;
+            text-align: center;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        /* Styles for parameter rows */
+        .parameter-row {
+            display: grid;
+            grid-template-columns: 2fr 1.5fr 1.5fr 0.5fr; /* Adjusted for checkbox */
+            align-items: center;
+            margin-bottom: 15px;
+            column-gap: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #eee;
+        }
+        .parameter-row:last-child {
+            border-bottom: none;
+        }
+        .parameter-name {
+            font-weight: bold;
+            color: #333;
+        }
+        .obtain-value-input input, .normal-range-input input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 15px;
+        }
+        .select-checkbox {
+            text-align: center; /* Center the checkbox */
+        }
+        .select-checkbox input[type="checkbox"] {
+            margin-left: 0; /* Remove left margin for centering */
+            transform: scale(1.2); /* Slightly larger checkbox */
+        }
+        .header-row{
+            display: grid;
+            grid-template-columns: 2fr 1.5fr 1.5fr 0.5fr; /* Adjusted for checkbox */
+            align-items: center;
+            margin-bottom: 15px;
+            font-weight: bold;
+            text-align: center;
+            column-gap: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ccc;
+            color: #333;
+        }
+        .header-row div:first-child {
+            text-align: left; /* Align header text for parameter name */
+        }
+        .patient-info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Two columns */
+            gap: 20px; /* Increased gap */
+        }
+        .patient-info-grid > div {
+            margin-bottom: 0; /* Remove individual margin as gap handles spacing */
+        }
+        .patient-info-grid .full-width {
+            grid-column: 1 / -1; /* Make this item span both columns */
+        }
+        .patient-info-grid div:nth-child(3) { /* Age / Gender specific styling */
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .patient-info-grid div:nth-child(3) label {
+            margin-bottom: 0;
+        }
+        .patient-info-grid div:nth-child(3) input {
+            flex: 1;
+        }
+        .patient-info-grid div:nth-child(3) select {
+            flex: 1;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            body {
+                margin: 10px;
+                padding: 15px;
+            }
+            .patient-info-grid {
+                grid-template-columns: 1fr; /* Single column on small screens */
+                gap: 15px;
+            }
+            .patient-info-grid div:nth-child(3) {
+                flex-direction: column; /* Stack age/gender on small screens */
+                align-items: flex-start;
+            }
+            .patient-info-grid div:nth-child(3) input,
+            .patient-info-grid div:nth-child(3) select {
+                width: 100%;
+            }
+
+            .parameter-row, .header-row {
+                grid-template-columns: 1fr; /* Stack elements on small screens */
+                text-align: left;
+            }
+            .parameter-name {
+                grid-column: 1 / -1; /* Make name span full width */
+                margin-bottom: 5px;
+            }
+            .obtain-value-input, .normal-range-input, .select-checkbox {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            .select-checkbox {
+                text-align: left; /* Align checkbox to left on small screens */
+            }
+            .header-row div {
+                text-align: left !important; /* Ensure headers also align left */
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Blood Sugar Report Form (FP & PP)</h1>
+    <form action="/generate_blood_sugar_report" method="POST">
+        <div class="form-group" id="selected_blood_sugar_test">
+            <label for="blood_sugar_test_type">Select Test:</label>
+            <select id="blood_sugar_test_type" name="selected_blood_sugar_test" required onchange="showTestParameters(this.value)">
+                <option value="">Select a Test</option>
+                <option value="Blood Sugar (FP & PP)">Blood Sugar (Fasting & Post-Prandial)</option>
+            </select>
+        </div>
+
+        <div id="test_parameters" style="display: none;">
+            <div class="section">
+                <h2>Patient Information</h2>
+                <div class="patient-info-grid">
+                    <div>
+                        <label for="patient_name">Name:</label>
+                        <input type="text" id="patient_name" name="patient_name" required>
+                    </div>
+                    <div>
+                        <label for="patient_id">Patient ID:</label>
+                        <input type="text" id="patient_id" name="patient_id">
+                    </div>
+                    <div>
+                        <label for="age">Age / Gender:</label>
+                        <input type="number" id="age" name="age" placeholder="Age" required>
+                        <select id="gender" name="gender" required>
+                            <option value="">Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="report_id">Report ID:</label>
+                        <input type="text" id="report_id" name="report_id">
+                    </div>
+                    <div>
+                        <label for="referedby">Referred By:</label>
+                        <input type="text" id="referedby" name="referedby">
+                    </div>
+                    <div>
+                        <label for="phonenumber">Phone No.:</label>
+                        <input type="tel" id="phonenumber" name="phonenumber">
+                    </div>
+                    <div>
+                        <label for="collection_date">Collection Date:</label>
+                        <input type="datetime-local" id="collection_date" name="collection_date">
+                    </div>
+                    <div>
+                        <label for="report_date">Report Date:</label>
+                        <input type="datetime-local" id="report_date" name="report_date">
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Blood Sugar Parameters</h2>
+                <div class="header-row">
+                    <div>Test Parameter Name</div>
+                    <div>Obtained Value</div>
+                    <div>Normal Range</div>
+                    <div>Select</div>
+                </div>
+
+                <div class="parameter-row">
+                    <div class="parameter-name">Fasting Plasma Glucose (FP) (mg/dL)</div>
+                    <div class="obtain-value-input">
+                        <input type="number" step="0.01" id="Fasting Plasma Glucose (FP)" name="Fasting Plasma Glucose (FP)">
+                    </div>
+                    <div class="normal-range-input">
+                        <input type="text" name="Fasting Plasma Glucose (FP)_normal_range" placeholder="e.g., <100 mg/dL">
+                    </div>
+                    <div class="select-checkbox">
+                        <input type="checkbox" id="Fasting Plasma Glucose (FP)_check" name="selected_blood_sugar_parameters" value="Fasting Plasma Glucose (FP)" onchange="toggleParameterInput('Fasting Plasma Glucose (FP)')">
+                    </div>
+                </div>
+
+                <div class="parameter-row">
+                    <div class="parameter-name">Post-Prandial Blood Sugar (PP) (2 Hrs) (mg/dL)</div>
+                    <div class="obtain-value-input">
+                        <input type="number" step="0.01" id="Post-Prandial Blood Sugar (PP)" name="Post-Prandial Blood Sugar (PP)">
+                    </div>
+                    <div class="normal-range-input">
+                        <input type="text" name="Post-Prandial Blood Sugar (PP)_normal_range" placeholder="e.g., <140 mg/dL">
+                    </div>
+                    <div class="select-checkbox">
+                        <input type="checkbox" id="Post-Prandial Blood Sugar (PP)_check" name="selected_blood_sugar_parameters" value="Post-Prandial Blood Sugar (PP)" onchange="toggleParameterInput('Post-Prandial Blood Sugar (PP)')">
+                    </div>
+                </div>
+
+                <!-- Add more blood sugar related parameters here if needed -->
+
+            </div>
+        </div>
+
+        <button type="submit">Generate Blood Sugar Report</button>
+    </form>
+
+    <div class="navigation-buttons">
+        <!-- Assuming you have a home route, otherwise remove this link -->
+        <a href="{{ url_for('home') }}" class="btn-secondary">
+            ← Back to Home
+        </a>
+    </div>
+
+    <script>
+        function showTestParameters(selectedTest) {
+            const testParametersDiv = document.getElementById('test_parameters');
+            if (selectedTest === 'Blood Sugar (FP & PP)') {
+                testParametersDiv.style.display = 'block';
+            } else {
+                testParametersDiv.style.display = 'none';
+            }
+        }
+
+       function toggleParameterInput(parameterName) {
+            // This function is currently not hiding/showing inputs as they are always visible.
+            // It's primarily used to toggle the checkbox state if needed for form submission logic.
+            // If you want to hide/show inputs based on checkbox, you'd need to wrap the input divs
+            // in a container that can be toggled. For now, inputs are always visible if the test section is shown.
+            console.log(`Checkbox for ${parameterName} was toggled.`);
+        }
+
+        // Initialize the form to show or hide parameters based on initial selection (if any)
+        document.addEventListener('DOMContentLoaded', () => {
+            const selectElement = document.getElementById('blood_sugar_test_type');
+            showTestParameters(selectElement.value);
+        });
+    </script>
+</body>
+</html>

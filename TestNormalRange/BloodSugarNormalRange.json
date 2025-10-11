@@ -1,0 +1,14 @@
+{
+   "Blood Sugar": {
+    "Blood Sugar Fasting": {
+      "Normal": {
+        "range_mg_dL": "70 - 100"
+      }
+    },
+    "Blood Sugar PP": {
+      "Normal": {
+        "range_mg_dL": "< 140"
+      }
+    }
+  }
+}
