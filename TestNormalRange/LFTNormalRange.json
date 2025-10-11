@@ -1,0 +1,44 @@
+{
+"LFT": {
+    "SERUM BILIRUBIN (TOTAL)": {
+      "unit": "mg/dl",
+      "range": "0.2 - 1.2"
+    },
+    "SERUM BILIRUBIN (DIRECT)": {
+      "unit": "mg/dl",
+      "range": "0 - 0.3"
+    },
+    "SERUM BILIRUBIN (INDIRECT)": {
+      "unit": "mg/dl",
+      "range": "0.2 - 1"
+    },
+    "SGPT (ALT)": {
+      "unit": "U/I",
+      "range": "Male: 10 - 40, Female: 7 - 35"
+    },
+    "SGOT (AST)": {
+      "unit": "U/I",
+      "range": "Male: 10 - 34, Female: 8 - 30"
+    },
+    "SERUM ALKALINE PHOSPHATASE": {
+      "unit": "U/I",
+      "range": "Male: 44 - 147, Female: 33 - 131"
+    },
+    "SERUM PROTEIN": {
+      "unit": "g/dl",
+      "range": "6.4 - 8.3"
+    },
+    "SERUM ALBUMIN": {
+      "unit": "g/dl",
+      "range": "3.5 - 5.2"
+    },
+    "GLOBULIN": {
+      "unit": "g/dl",
+      "range": "1.8 - 3.6"
+    },
+    "A/G RATIO": {
+      "unit": "N/A",
+      "range": "1.1 - 2.1"
+    }
+  }
+}

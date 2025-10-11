@@ -1,0 +1,36 @@
+{
+   "LIPID": {
+    "TOTAL CHOLESTEROL": {
+      "unit": "mg/dl",
+      "range": "125-200"
+    },
+    "TRIGLYCERIDES": {
+      "unit": "mg/dl",
+      "range": "Male: 40-160, Female: 35-135"
+    },
+    "LDL CHOLESTEROL": {
+      "unit": "mg/dl",
+      "range": "<100"
+    },
+    "VLDL CHOLESTEROL": {
+      "unit": "mg/dl",
+      "range": "5-40"
+    },
+    "LDL / HDL": {
+      "unit": "",
+      "range": "Male: <3.5, Female: <3.0"
+    },
+    "TOTAL CHOLESTEROL / HDL": {
+      "unit": "",
+      "range": "Male: <5.0, Female: <4.5"
+    },
+    "TG / HDL": {
+      "unit": "",
+      "range": ""
+    },
+    "NON - HDL CHOLESTEROL": {
+      "unit": "",
+      "range": "<130"
+    }
+  }
+}

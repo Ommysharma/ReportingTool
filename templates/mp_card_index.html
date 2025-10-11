@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MP Card Test Report Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #2c3e50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+        }
+        .navigation-buttons {
+        margin: 20px 0;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            color: white;
+        }
+        .parameter-option {
+            margin-bottom: 10px;
+        }
+        #selected_test {
+            margin-bottom: 20px;
+        }
+
+        .patient-info-grid {
+            display: grid;
+            grid-template-columns: auto auto; /* Two columns */
+            gap: 10px;
+        }
+
+        .patient-info-grid > div {
+            margin-bottom: 10px;
+        }
+         #selected_lft_test {
+            margin-bottom: 20px;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>MP (Malaria Parasite) Card Test Report Form</h1>
+
+    <form action="/generate_mp_card_report" method="POST">
+          <div class="form-group" id="selected_mp_card_test">
+            <label for="test_type">Select Test:</label>
+            <select id="test_type" name="selected_mp_card_test" required onchange="showTestParameters(this.value)">
+                <option value=" ">Select a Test</option>
+                 <option value="MP">MP (Malaria Parasite) Card Test</option>
+                </select>
+        </div>
+        <div id="test_parameters" style="display: none;">
+            <div class="section">
+                <h2>Patient Information</h2>
+                <div class="patient-info-grid">
+                    <div>
+                        <label for="patient_name">Name:</label>
+                        <input type="text" id="patient_name" name="patient_name" required>
+                    </div>
+                    <div>
+                        <label for="age">Age / Gender:</label>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="number" id="age" name="age" style="width: 60px;" required>
+                            <select id="gender" name="gender" required style="width: 80px;">
+                                <option value="">Select</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="referred_by">Referred By:</label>
+                        <input type="text" id="referred_by" name="referred_by">
+                    </div>
+                    <div>
+                        <label for="reg_no">Reg. No.:</label>
+                        <input type="text" id="reg_no" name="reg_no">
+                    </div>
+                    <div>
+                        <label for="phonenumber">Phone No.:</label>
+                        <input type="tel" id="phonenumber" name="phonenumber">
+                    </div>
+                    <div>
+                        <label for="collection_date">Collection Date:</label>
+                        <input type="datetime-local" id="collection_date" name="collection_date">
+                    </div>
+                    <div>
+                        <label for="received_date">Received Date:</label>
+                        <input type="datetime-local" id="received_date" name="received_date">
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>MP Card Test Results</h2>
+                <div class="form-group">
+                    <div class="parameter-option">
+                        <label for="malaria_parasite">MALARIA PARASITE (CARD TEST):</label>
+                        <select id="malaria_parasite" name="MALARIA PARASITE (CARD TEST)" required>
+                            <option value="">Select Result</option>
+                            <option value="NEGATIVE">NEGATIVE</option>
+                            <option value="POSITIVE">POSITIVE</option>
+                        </select>
+                    </div>
+                    <div class="parameter-option">
+                        <label for="plasmodium_falciparum">PLASMODIUM FALCIPARUM 'Pf':</label>
+                        <select id="plasmodium_falciparum" name="PLASMODIUM FALCIPARUM 'Pf'" required>
+                            <option value="">Select Result</option>
+                            <option value="NEGATIVE">NEGATIVE</option>
+                            <option value="POSITIVE">POSITIVE</option>
+                        </select>
+                    </div>
+                    <div class="parameter-option">
+                        <label for="plasmodium_vivax">PLASMODIUM VIVAX 'Pv':</label>
+                        <select id="plasmodium_vivax" name="PLASMODIUM VIVAX 'Pv'" required>
+                            <option value="">Select Result</option>
+                            <option value="NEGATIVE">NEGATIVE</option>
+                            <option value="POSITIVE">POSITIVE</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit">Generate MP Card Test Report</button>
+    </form>
+
+    <div class="navigation-buttons">
+        <a href="{{ url_for('home') }}" class="btn btn-secondary">
+            ← Back to Home
+        </a>
+    </div>
+
+    <script>
+
+        function showTestParameters(selectedTest) {
+            const testParametersDiv = document.getElementById('test_parameters');
+            if (selectedTest === 'MP') {
+                testParametersDiv.style.display = 'block';
+            } else {
+                testParametersDiv.style.display = 'none';
+                // You can add logic here to show different parameter sections
+                // based on the selected test if you add more tests to the dropdown.
+            }
+        }
+
+    </script>
+
+</body>
+</html>

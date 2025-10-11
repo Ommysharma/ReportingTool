@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lipid Profile Report Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        h2{
+           text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #2c3e50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            opacity: 0.8;
+        }
+        .section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+        }
+        .navigation-buttons {
+            margin: 20px 0;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            color: white;
+        }
+        /* New styles for LFT parameters matching CBC */
+        .parameter-row {
+            display: grid;
+            grid-template-columns: 2fr 1.5fr 1.5fr 1fr;
+            align-items: center;
+            margin-bottom: 10px;
+            column-gap: 15px;
+        }
+        .parameter-name {
+            font-weight: bold;
+        }
+        .obtain-value-input input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .normal-range-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .select-checkbox {
+            text-align: right;
+        }
+        .select-checkbox input[type="checkbox"] {
+            margin-left: 10px;
+        }
+        .header-row{
+            display: grid;
+            grid-template-columns: 2fr 1.5fr 1.5fr 1fr;
+            align-items: center;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-align: center;
+             column-gap: 15px;
+        }
+        .patient-info-grid {
+            display: grid;
+            grid-template-columns: auto auto;
+            gap: 10px;
+        }
+        .patient-info-grid > div {
+            margin-bottom: 10px;
+        }
+        @media (max-width: 400px){
+           .parameter-row {
+             grid-template-columns: 1fr 1fr;
+           }
+           .parameter-name{
+             grid-column: 1 / -1;
+             margin-bottom: 10px;
+           }
+           .select-checkbox{
+             text-align: left;
+           }
+        }
+    </style>
+</head>
+<body>
+    <h1>Lipid Profile Report Form</h1>
+    <form action="/generate_lipid_report" method="POST">
+        <div class="form-group" id="selected_lipid_test">
+            <label for="lipid_test_type">Select Test:</label>
+            <select id="lipid_test_type" name="selected_lipid_test" required onchange="showTestParameters(this.value)">
+                <option value="">Select a Test</option>
+                <option value="LipidProfile">Lipid Profile Test</option>
+            </select>
+        </div>
+
+        <div id="test_parameters" style="display: none;">
+            <div class="section">
+                <h2>Patient Information</h2>
+                <div class="patient-info-grid">
+                    <div>
+                        <label for="patient_name">Name:</label>
+                        <input type="text" id="patient_name" name="patient_name" required>
+                    </div>
+                    <div>
+                        <label for="patient_id">Patient ID:</label>
+                        <input type="text" id="patient_id" name="patient_id">
+                    </div>
+                    <div>
+                        <label for="age">Age / Gender:</label>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="number" id="age" name="age" style="width: 60px;" required>
+                            <select id="gender" name="gender" required style="width: 80px;">
+                                <option value="">Select</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="report_id">Report ID:</label>
+                        <input type="text" id="report_id" name="report_id">
+                    </div>
+                    <div>
+                        <label for="referedby">Referred By:</label>
+                        <input type="text" id="referedby" name="referedby">
+                    </div>
+                    <div>
+                        <label for="phonenumber">Phone No.:</label>
+                        <input type="tel" id="phonenumber" name="phonenumber">
+                    </div>
+                    <div>
+                        <label for="collection_date">Collection Date:</label>
+                        <input type="datetime-local" id="collection_date" name="collection_date">
+                    </div>
+                    <div>
+                        <label for="report_date">Report Date:</label>
+                        <input type="datetime-local" id="report_date" name="report_date">
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Lipid Profile Parameters</h2>
+                <div class="header-row">
+                    <div>Test Parameter Name</div>
+                    <div>Obtain Value</div>
+                    <div>Normal Range</div>
+                    <div>Select</div>
+                </div>
+
+                <div class="parameter-row">
+                    <div class="parameter-name">TOTAL CHOLESTEROL (mg/dl)</div>
+                    <div class="obtain-value-input">
+                        <input type="number" step="0.01" id="TOTAL CHOLESTEROL (mg/dl)" name="TOTAL CHOLESTEROL (mg/dl)">
+                    </div>
+                    <div class="normal-range-input">
+                        <input type="text" name="TOTAL CHOLESTEROL (mg/dl)_normal_range" placeholder="Normal Range">
+                    </div>
+                    <div class="select-checkbox">
+                        <input type="checkbox" id="TOTAL CHOLESTEROL (mg/dl)_check" name="selected_lipid_parameters" value="TOTAL CHOLESTEROL (mg/dl)" onchange="toggleParameterInput('TOTAL CHOLESTEROL (mg/dl)')">
+                    </div>
+                </div>
+
+                <div class="parameter-row">
+                    <div class="parameter-name">TRIGLYCERIDES (mg/dl)</div>
+                    <div class="obtain-value-input">
+                        <input type="number" step="0.01" id="TRIGLYCERIDES (mg/dl)" name="TRIGLYCERIDES (mg/dl)">
+                    </div>
+                    <div class="normal-range-input">
+                        <input type="text" name="TRIGLYCERIDES (mg/dl)_normal_range" placeholder="Normal Range">
+                    </div>
+                    <div class="select-checkbox">
+                        <input type="checkbox" id="TRIGLYCERIDES (mg/dl)_check" name="selected_lipid_parameters" value="TRIGLYCERIDES (mg/dl)" onchange="toggleParameterInput('TRIGLYCERIDES (mg/dl)')">
+                    </div>
+                </div>
+
+                <div class="parameter-row">
+                    <div class="parameter-name">HDL CHOLESTEROL (mg/dl)</div>
+                    <div class="obtain-value-input">
+                        <input type="number" step="0.01" id="HDL CHOLESTEROL (mg/dl)" name="HDL CHOLESTEROL (mg/dl)">
+                    </div>
+                    <div class="normal-range-input">
+                        <input type="text" name="HDL CHOLESTEROL (mg/dl)_normal_range" placeholder="Normal Range">
+                    </div>
+                    <div class="select-checkbox">
+                        <input type="checkbox" id="HDL CHOLESTEROL (mg/dl)_check" name="selected_lipid_parameters" value="HDL CHOLESTEROL (mg/dl)" onchange="toggleParameterInput('HDL CHOLESTEROL (mg/dl)')">
+                    </div>
+                </div>
+
+                <div class="parameter-row">
+                    <div class="parameter-name">LDL CHOLESTEROL (mg/dl)</div>
+                    <div class="obtain-value-input">
+                        <input type="number" step="0.01" id="LDL CHOLESTEROL (mg/dl)" name="LDL CHOLESTEROL (mg/dl)">
+                    </div>
+                    <div class="normal-range-input">
+                        <input type="text" name="LDL CHOLESTEROL (mg/dl)_normal_range" placeholder="Normal Range">
+                    </div>
+                    <div class="select-checkbox">
+                        <input type="checkbox" id="LDL CHOLESTEROL (mg/dl)_check" name="selected_lipid_parameters" value="LDL CHOLESTEROL (mg/dl)" onchange="toggleParameterInput('LDL CHOLESTEROL (mg/dl)')">
+                    </div>
+                </div>
+
+                <div class="parameter-row">
+                    <div class="parameter-name">VLDL CHOLESTEROL (mg/dl)</div>
+                    <div class="obtain-value-input">
+                        <input type="number" step="0.01" id="VLDL CHOLESTEROL (mg/dl)" name="VLDL CHOLESTEROL (mg/dl)">
+                    </div>
+                    <div class="normal-range-input">
+                        <input type="text" name="VLDL CHOLESTEROL (mg/dl)_normal_range" placeholder="Normal Range">
+                    </div>
+                    <div class="select-checkbox">
+                        <input type="checkbox" id="VLDL CHOLESTEROL (mg/dl)_check" name="selected_lipid_parameters" value="VLDL CHOLESTEROL (mg/dl)" onchange="toggleParameterInput('VLDL CHOLESTEROL (mg/dl)')">
+                    </div>
+                </div>
+
+                <div class="parameter-row">
+                    <div class="parameter-name">LDL / HDL</div>
+                    <div class="obtain-value-input">
+                        <input type="number" step="0.01" id="LDL / HDL" name="LDL / HDL">
+                    </div>
+                    <div class="normal-range-input">
+                        <input type="text" name="LDL / HDL_normal_range" placeholder="Normal Range">
+                    </div>
+                    <div class="select-checkbox">
+                        <input type="checkbox" id="LDL / HDL_check" name="selected_lipid_parameters" value="LDL / HDL" onchange="toggleParameterInput('LDL / HDL')">
+                    </div>
+                </div>
+
+                <div class="parameter-row">
+                    <div class="parameter-name">TOTAL CHOLESTEROL / HDL</div>
+                    <div class="obtain-value-input">
+                        <input type="number" step="0.01" id="TOTAL CHOLESTEROL / HDL" name="TOTAL CHOLESTEROL / HDL">
+                    </div>
+                    <div class="normal-range-input">
+                        <input type="text" name="TOTAL CHOLESTEROL / HDL_normal_range" placeholder="Normal Range">
+                    </div>
+                    <div class="select-checkbox">
+                        <input type="checkbox" id="TOTAL CHOLESTEROL / HDL_check" name="selected_lipid_parameters" value="TOTAL CHOLESTEROL / HDL" onchange="toggleParameterInput('TOTAL CHOLESTEROL / HDL')">
+                    </div>
+                </div>
+
+                <div class="parameter-row">
+                    <div class="parameter-name">TG / HDL</div>
+                    <div class="obtain-value-input">
+                        <input type="number" step="0.01" id="TG / HDL" name="TG / HDL">
+                    </div>
+                    <div class="normal-range-input">
+                        <input type="text" name="TG / HDL_normal_range" placeholder="Normal Range">
+                    </div>
+                    <div class="select-checkbox">
+                        <input type="checkbox" id="TG / HDL_check" name="selected_lipid_parameters" value="TG / HDL" onchange="toggleParameterInput('TG / HDL')">
+                    </div>
+                </div>
+
+                <div class="parameter-row">
+                    <div class="parameter-name">NON - HDL CHOLESTEROL</div>
+                    <div class="obtain-value-input">
+                        <input type="number" step="0.01" id="NON - HDL CHOLESTEROL" name="NON - HDL CHOLESTEROL">
+                    </div>
+                    <div class="normal-range-input">
+                        <input type="text" name="NON - HDL CHOLESTEROL_normal_range" placeholder="Normal Range">
+                    </div>
+                    <div class="select-checkbox">
+                        <input type="checkbox" id="NON - HDL CHOLESTEROL_check" name="selected_lipid_parameters" value="NON - HDL CHOLESTEROL" onchange="toggleParameterInput('NON - HDL CHOLESTEROL')">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit">Generate Lipid Profile Report</button>
+    </form>
+
+    <div class="navigation-buttons">
+        <a href="{{ url_for('home') }}" class="btn btn-secondary">
+            ← Back to Home
+        </a>
+    </div>
+
+    <script>
+        function showTestParameters(selectedTest) {
+            const testParametersDiv = document.getElementById('test_parameters');
+            if (selectedTest === 'LipidProfile') {
+                testParametersDiv.style.display = 'block';
+            } else {
+                testParametersDiv.style.display = 'none';
+            }
+        }
+
+       function toggleParameterInput(parameterName) {
+            const checkbox = document.getElementById(parameterName + '_check');
+            const parameterRow = checkbox.closest('.parameter-row');
+            if (parameterRow) {
+                const obtainValueInput = parameterRow.querySelector('.obtain-value-input input');
+                const normalRangeInput = parameterRow.querySelector('.normal-range-input input');
+
+                if (checkbox.checked) {
+                    if (obtainValueInput) obtainValueInput.removeAttribute('disabled');
+                    if (normalRangeInput) normalRangeInput.removeAttribute('disabled');
+                } else {
+                    if (obtainValueInput) {
+                        obtainValueInput.setAttribute('disabled', 'true');
+                        obtainValueInput.value = ''; // Clear value when unchecked
+                    }
+                    if (normalRangeInput) {
+                        normalRangeInput.setAttribute('disabled', 'true');
+                        normalRangeInput.value = ''; // Clear value when unchecked
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>

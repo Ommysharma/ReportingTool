@@ -1,0 +1,19 @@
+{
+  "Viral Markers": {
+    "HIV-1 (CARD TEST)": {
+      "value": "NEGATIVE"
+    },
+    "HIV-2 (CARD TEST)": {
+      "value": "NEGATIVE"
+    },
+    "VDRL": {
+      "value": "NON - REACTIVE"
+    },
+    "HEPATITIS C VIRUS, HCV": {
+      "value": "NEGATIVE"
+    },
+    "HBsAg": {
+      "value": "NEGATIVE"
+    }
+  }
+}

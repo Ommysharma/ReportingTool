@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Urine Report - Labsmart Software</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+        .report-container {
+            max-width: 210mm; /* A4 width */
+            width: 100%;
+            background-color: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            padding: 40px;
+            margin-bottom: 10px; /* Space for download buttons */
+        }
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 2px solid #e0e0e0;
+            margin-bottom: 20px;
+            display: flex;
+            background-color: #00BFFF;
+            padding-left: 30px; /* Added padding to match report-container's previous overall padding */
+            padding-right: 30px;
+        }
+        .lab-info {
+            display: flex;
+            align-items: center;
+        }
+        .lab-logo {
+            width: 50px;
+            height: 50px;
+            background-color: #007bff; /* Placeholder color */
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.5rem;
+            margin-right: 15px;
+        }
+        .lab-details h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .lab-details p {
+            font-size: 1rem;
+            color: #555;
+            line-height: 1.4;
+            font-weight: bold;
+        }
+        .contact-info {
+            text-align: right;
+            font-size: 0.9rem;
+            color: #555;
+            font-weight: bold;
+        }
+        .contact-info p {
+            margin-bottom: 5px;
+        }
+        .patient-details-section { /* New class for the patient details container */
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start; /* Align items to the top */
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+            color: #444;
+            border-bottom: 1px solid #e0e0e0; /* Separator line */
+            padding-bottom: 15px;
+        }
+        .patient-details-left, .patient-details-right {
+            flex: 1;
+        }
+        .patient-details-left p, .patient-details-right p {
+            margin-bottom: 5px;
+            gap: 10px; /* Space between key and value */
+        }
+        .patient-details-left span, .patient-details-right span {
+            font-weight: 500;
+            color: #222;
+        }
+         .patient-details-right {
+            text-align: right; /* Right-align content in the second half */
+            padding-left: 10px; /* Add padding to push content further right */
+        }
+        /* Removed .qr-code-placeholder styles as the div is removed */
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #007bff;
+            border-bottom: 1px solid #007bff;
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+        }
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .report-table th, .report-table td {
+            border: 1px solid #e0e0e0;
+            padding: 10px 15px;
+            text-align: left;
+            font-size: 0.9rem;
+            color: #333;
+        }
+        .report-table th {
+            background-color: #f8f8f8;
+            font-weight: 600;
+            color: #007bff;
+        }
+        .report-table tr:nth-child(even) {
+            background-color: #fdfdfd;
+        }
+        .report-table tr:hover {
+            background-color: #f5f5f5;
+        }
+        .category-row {
+            background-color: #eaf6ff !important;
+            font-weight: 600;
+            color: #0056b3;
+        }
+        .sub-category-row {
+            background-color: #f5fbff !important;
+            font-weight: 500;
+            color: #0056b3;
+            padding-left: 25px !important;
+        }
+        .interpretation-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px dashed #e0e0e0;
+        }
+        .interpretation-section h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .interpretation-section p {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #555;
+            margin-bottom: 15px;
+        }
+        .signatures-section {
+            display: flex;
+            justify-content: left; /* Center the single signature block */
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .signature-block {
+            text-align: center;
+            /* flex: 1; Removed flex:1 to prevent it from stretching */
+            margin: 0 10px;
+        }
+        .signature-line {
+            border-top: 1px dashed #ccc;
+            margin-top: 40px; /* Space for signature */
+            margin-bottom: 5px;
+        }
+        .signature-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 0.95rem;
+        }
+        .signature-title {
+            font-size: 0.85rem;
+            color: #666;
+        }
+        .footer-section {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #e0e0e0;
+            font-size: 0.8rem;
+            color: #777;
+            line-height: 1.4;
+        }
+        .footer-section p {
+            margin-bottom: 5px;
+        }
+        .regd-no {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #333;
+        }
+        .scan-download {
+            font-size: 0.7rem;
+            color: #777;
+            text-align: center;
+            margin-top: 5px;
+        }
+
+        /* Download/Navigation Buttons */
+        .download-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            padding-bottom: 20px;
+        }
+        .download-btn, .btn-primary, .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border: none;
+            cursor: pointer;
+        }
+        .download-btn {
+            background-color: #007bff;
+            color: white;
+        }
+        .download-btn:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+        .btn-primary {
+            background-color: #6c757d; /* Grey for previous report */
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #5a6268;
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background-color: #17a2b8; /* Info blue for home */
+            color: white;
+        }
+        .btn-secondary:hover {
+            background-color: #138496;
+            transform: translateY(-2px);
+        }
+
+        /* Print-specific styles */
+        @media print {
+            body {
+                background-color: #fff;
+                -webkit-print-color-adjust: exact; /* Ensures background colors are printed */
+                margin: 0;
+                padding: 0;
+            }
+            .report-container {
+                box-shadow: none;
+                border-radius: 0;
+                margin: 0;
+                padding: 5mm; /* A4 margins */
+                width: 210mm; /* A4 width */
+                min-height: 297mm; /* A4 height */
+                display: block; /* Change to block for better pagination control */
+            }
+            .header-section,
+            .patient-details-section, /* Use the new class here */
+            .interpretation-section,
+            .signatures-section,
+            .footer-section {
+                page-break-inside: avoid; /* Prevent these sections from breaking */
+            }
+            .report-table {
+                page-break-inside: auto; /* Allow tables to break if necessary */
+            }
+            .report-table tr {
+                page-break-inside: avoid; /* Prevent table rows from breaking */
+                page-break-after: auto; /* Allow breaks after rows if needed */
+            }
+            .category-row, .sub-category-row {
+                page-break-after: avoid; /* Keep category headers with their first items */
+            }
+            /* Ensure content within interpretation paragraphs stays together */
+            .interpretation-section p {
+                page-break-inside: avoid;
+            }
+            /* Hide download/navigation buttons when printing */
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="report-container">
+        <!-- Header Section -->
+        <div class="header-section">
+            <div class="lab-info">
+                <div class="lab-logo">S</div>
+                <div class="lab-details">
+                    <h1>S.D.PATHOLOGICAL</h1>
+                    <p> LABORATORY & X-RAY CLINIC </p>
+                </div>
+            </div>
+            <div class="contact-info">
+                <p class="regd-no">Regd. No.: XXXX54826XX</p>
+                <p>8294959563,6299618711</p>
+                <p>slab8985@gmail.com</p>
+                <p>Near Thakurbari Temple,Taraiya Saran</p>
+            </div>
+        </div>
+
+        <!-- Patient and Report Details Section -->
+        <div class="patient-details-section">
+            <div class="patient-details-left">
+                <p>Patient Name : <span>{{ report.patientName }}</span></p>
+                <p>Age / Sex : <span>{{ report.ageSex }}</span></p>
+                <p>Referred by : <span>{{ report.referredBy }}</span></p>
+                <p>Reg. No. : <span>{{ report.regNo }}</span></p>
+            </div>
+            <div class="patient-details-right">
+                <p>Registered on : <span>{{ report.registeredOnDate }} {{ report.registeredOnTime }}</span></p>
+                <p>Collected on : <span>{{ report.collectedOn }}</span></p>
+                <p>Reported on : <span>{{ report.reportedOn }}</span></p>
+                <p>Received on : <span>{{ report.receivedOnDate }} {{ report.receivedOnTime }}</span></p>
+                <!-- Removed QR Code Placeholder -->
+            </div>
+        </div>
+
+        <!-- Clinical Pathology Section -->
+        <div class="mb-5">
+            <h2 class="section-title">CLINICAL PATHOLOGY</h2>
+            <table class="report-table">
+                <thead>
+                    <tr>
+                        <th>TEST</th>
+                        <th>VALUE</th>
+                        <th>UNIT</th>
+                        <th>REFERENCE</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="category-row">
+                        <td colspan="4">URINE ROUTINE EXAMINATION</td>
+                    </tr>
+                    <tr class="sub-category-row">
+                        <td colspan="4">PHYSICAL EXAMINATION</td>
+                    </tr>
+                    <tr>
+                        <td>QUANTITY</td>
+                        <td>{{ report.quantity }}</td>
+                        <td>{{ report.quantityUnit }}</td>
+                        <td>Pale Yellow</td>
+                    </tr>
+                    <tr>
+                        <td>COLOUR</td>
+                        <td>{{ report.colour }}</td>
+                        <td></td>
+                        <td>Clear</td>
+                    </tr>
+                    <tr>
+                        <td>TRANSPARENCY</td>
+                        <td>{{ report.transparency }}</td>
+                        <td></td>
+                        <td>Clear</td>
+                    </tr>
+                    <tr>
+                        <td>SPECIFIC GRAVITY</td>
+                        <td>{{ report.specificGravity }}</td>
+                        <td></td>
+                        <td>{{ report.specificGravityRef }}</td>
+                    </tr>
+                    <tr>
+                        <td>PH</td>
+                        <td>{{ report.ph }}</td>
+                        <td></td>
+                        <td>{{ report.phRef }}</td>
+                    </tr>
+                    <tr>
+                        <td>LEUKOCYTES</td>
+                        <td>{{ report.leukocytes }}</td>
+                        <td></td>
+                        <td>Absent</td>
+                    </tr>
+                    <tr>
+                        <td>BLOOD</td>
+                        <td>{{ report.blood }}</td>
+                        <td></td>
+                        <td>Absent</td>
+                    </tr>
+                    <tr class="sub-category-row">
+                        <td colspan="4">CHEMICAL EXAMINATION</td>
+                    </tr>
+                    <tr>
+                        <td>PROTEIN / ALBUMIN</td>
+                        <td>{{ report.proteinAlbumin }}</td>
+                        <td></td>
+                        <td>Absent</td>
+                    </tr>
+                    <tr>
+                        <td>SUGAR / GLUCOSE</td>
+                        <td>{{ report.sugarGlucose }}</td>
+                        <td></td>
+                        <td>Absent</td>
+                    </tr>
+                    <tr>
+                        <td>KETONE BODIES</td>
+                        <td>{{ report.ketoneBodies }}</td>
+                        <td></td>
+                        <td>Absent</td>
+                    </tr>
+                    <tr>
+                        <td>BILIRUBIN</td>
+                        <td>{{ report.bilirubin }}</td>
+                        <td></td>
+                        <td>Absent</td>
+                    </tr>
+                    <tr>
+                        <td>NITRITE</td>
+                        <td>{{ report.nitrite }}</td>
+                        <td></td>
+                        <td>Absent</td>
+                    </tr>
+                    <tr class="sub-category-row">
+                        <td colspan="4">MICROSCOPIC EXAMINATION</td>
+                    </tr>
+                    <tr>
+                        <td>R.B.C.</td>
+                        <td>{{ report.rbc }}</td>
+                        <td>{{ report.rbcUnit }}</td>
+                        <td>Absent</td>
+                    </tr>
+                    <tr>
+                        <td>PUS CELLS</td>
+                        <td>{{ report.pusCells }}</td>
+                        <td>{{ report.pusCellsUnit }}</td>
+                        <td>Absent</td>
+                    </tr>
+                    <tr>
+                        <td>EPITHELIAL CELLS</td>
+                        <td>{{ report.epithelialCells }}</td>
+                        <td>{{ report.epithelialCellsUnit }}</td>
+                        <td>Absent</td>
+                    </tr>
+                    <tr>
+                        <td>CASTS</td>
+                        <td>{{ report.casts }}</td>
+                        <td></td>
+                        <td>Absent</td>
+                    </tr>
+                    <tr>
+                        <td>CRYSTALS</td>
+                        <td>{{ report.crystals }}</td>
+                        <td></td>
+                        <td>Absent</td>
+                    </tr>
+                    <tr>
+                        <td>BACTERIA</td>
+                        <td>{{ report.bacteria }}</td>
+                        <td></td>
+                        <td>Absent</td>
+                    </tr>
+                    <tr>
+                        <td>OTHERS</td>
+                        <td>{{ report.others }}</td>
+                        <td></td>
+                        <td>Absent</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Signatures Section -->
+        <div class="signatures-section">
+            <div class="signature-block">
+                <div class="signature-line"></div>
+                <p class="signature-name">Dr. Surendra Rai</p>
+                <p class="signature-title">DMLT, Lab Incharge</p>
+            </div>
+            <!-- Removed the second signature block -->
+        </div>
+
+        <!-- Footer Section -->
+        <div class="footer-section">
+            <p><strong>NOT VALID FOR MEDICO LEGAL PURPOSE</strong></p>
+            <p>Work timings: Monday to Sunday, 8 am to 8 pm</p>
+            <p>Please correlate clinically. Although the test results are checked thoroughly, in case of any unexpected test results which could be due to machine error or typing error or any other reason please contact the lab immediately for a free evaluation.</p>
+        </div>
+    </div>
+
+    <div class="download-container no-print">
+        <a href="/download_pdf/urine/{{ report_id }}" class="download-btn">
+            📥 Download Full Report
+        </a>
+        <a href="{{ url_for('urine_report_form') }}" class="btn-primary">
+        ← GO To Previous Report
+        </a>
+
+        <a href="{{ url_for('home') }}" class="btn-secondary">
+            🏠 Return to Home
+        </a>
+    </div>
+</body>
+</html>
