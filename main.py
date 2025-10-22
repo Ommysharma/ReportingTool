@@ -11,7 +11,7 @@ app.secret_key = 'your_secret_key'
 
 # Dummy user credentials (replace with a secure method in a real application)
 USERS = {
-    'user': {'password': 'Akay@1993', 'reset_token': None, 'reset_token_expiry': None, 'email': 'sharmaganesh40@gmail.com'} # Assuming user has this email
+    'user': {'password': 'Hkay@1993', 'reset_token': None, 'reset_token_expiry': None, 'email': 'sharmaganesh40@gmail.com'} # Assuming user has this email
 }
 
 # Email configuration
