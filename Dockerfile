@@ -5,22 +5,21 @@ FROM python:3.11-bullseye
 WORKDIR /app
 
 # Clean the apt cache
+# Note: Cleaning cache before running update is non-standard but fine
 RUN apt-get clean
 
-# Update package lists
-RUN apt-get update
-
-# Install core system dependencies for WeasyPrint
-RUN apt-get install -y --no-install-recommends \
+# Update package lists and install core system dependencies for WeasyPrint
+# Combined into one RUN instruction for faster building and smaller layers
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
     libcairo2 \
-    libcairo2-dev \
     libpango-1.0-0 \
-    libpango1.0-dev \
     libgdk-pixbuf2.0-0 \
-    libgdk-pixbuf2.0-dev \
     libffi-dev \
-    libglib2.0-0 \
-    libglib2.0-dev
+    libglib2.0-0 && \
+    # Remove unused packages and clean up the apt cache for a smaller final image
+    apt-get autoremove -y && \
+    rm -rf /var/lib/apt/lists/*
 
 # Copy the requirements file into the container
 COPY requirements.txt .
@@ -31,12 +30,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the application code into the container
 COPY . .
 
-# Expose the port the application runs on
+# Cloud Run defines the PORT environment variable.
+# We expose 8080 for documentation, but Gunicorn must listen on $PORT.
 EXPOSE 8080
 
-# Set environment variables (optional but recommended)
-#ENV FLASK_APP=app.py
-#ENV FLASK_ENV=production
-
-# Define the command to run the application
-CMD ["gunicorn", "--bind", "0.0.0.0:8080", "main:app"]
+# The critical change: Use the shell form (without []) to allow environment
+# variable expansion and bind Gunicorn to the port specified by Cloud Run's $PORT.
+CMD gunicorn --bind 0.0.0.0:$PORT main:app
