@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask, render_template, request, redirect, url_for, make_response, session
 from weasyprint import HTML, CSS
 from datetime import datetime
@@ -1083,5 +1085,7 @@ def download_pdf(report_type,report_id):
     response.headers['Content-Disposition'] = f'attachment; filename=report_{report_id}.pdf'
     return response
 
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=8080)
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8080))
+    app.run(host="0.0.0.0", port=port)
