@@ -32,7 +32,7 @@ COPY . .
 
 # Cloud Run defines the PORT environment variable.
 # We expose 8080 for documentation, but Gunicorn must listen on $PORT.
-EXPOSE 8080
+EXPOSE 9090
 
 # The critical change: Use the shell form (without []) to allow environment
 # variable expansion and bind Gunicorn to the port specified by Cloud Run's $PORT.
