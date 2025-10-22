@@ -36,4 +36,6 @@ EXPOSE 8080
 
 # The critical change: We ensure the $PORT variable is expanded by the shell.
 # Using 'sh -c' makes the execution robust across different environments.
-CMD sh -c "gunicorn --bind 0.0.0.0:$PORT main:app"
+# Run the app using Python
+# Ensure your main file is named `main.py` (or adjust accordingly)
+CMD ["python", "main.py"]
