@@ -30,10 +30,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the application code into the container
 COPY . .
 
-# Cloud Run defines the PORT environment variable.
-# We expose 8080 for documentation, but Gunicorn must listen on $PORT.
-EXPOSE 9090
+# Cloud Run defines the PORT environment variable (currently 9090 in your error).
+# We expose 8080 for general documentation, but Gunicorn must listen on $PORT.
+EXPOSE 8080
 
-# The critical change: Use the shell form (without []) to allow environment
-# variable expansion and bind Gunicorn to the port specified by Cloud Run's $PORT.
-CMD gunicorn --bind 0.0.0.0:$PORT main:app
+# The critical change: We ensure the $PORT variable is expanded by the shell.
+# Using 'sh -c' makes the execution robust across different environments.
+CMD sh -c "gunicorn --bind 0.0.0.0:$PORT main:app"
